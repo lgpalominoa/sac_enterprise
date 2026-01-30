@@ -34,6 +34,7 @@ class MotorVentas:
         )
 
         results = []
+        
         for e in r.json().get("elements", []):
             tags = e.get("tags", {})
             results.append({
@@ -46,4 +47,7 @@ class MotorVentas:
                 "Lat": e.get("lat") or e.get("center", {}).get("lat"),
                 "Lon": e.get("lon") or e.get("center", {}).get("lon")
             })
+            
+            results.sort(key=lambda x: x['Nombre'].lower())
+            
         return results
