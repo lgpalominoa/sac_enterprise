@@ -1,20 +1,21 @@
 # --- Core ---
-streamlit==1.32.2
-pandas==2.0.3
-requests==2.31.0
+streamlit
+pandas
+requests
 
 # --- Database ---
-sqlite-utils==3.36
+sqlite-utils
 
 # --- Security ---
-bcrypt==4.1.2
+bcrypt
 
 # --- Maps ---
-folium==0.15.1
-streamlit-folium==0.18.0
+folium
+streamlit-folium
 
 # --- 2FA / Communications ---
-twilio==9.0.1
+twilio
 
 # --- Utilities ---
-python-dateutil==2.9.0.post0
+python-dateutil
+pyarrow

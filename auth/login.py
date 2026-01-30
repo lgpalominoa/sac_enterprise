@@ -1,34 +1,41 @@
 import streamlit as st
-from core.db import get_db
+import hashlib
+from core.db import get_db, ejecutar_query
 from core.security import verify_password
-from core.logs import log_event
+from core.logs import registrar_log
+from auth.twofa import iniciar_2fa
 
 def login():
-    st.subheader("🔐 Acceso Seguro")
+    st.subheader("🔐 Acceso Corporativo")
 
-    user = st.text_input("Usuario")
+    usuario = st.text_input("Usuario")
     password = st.text_input("Contraseña", type="password")
+    password = hashlib.sha256(password.encode()).hexdigest()
 
     if st.button("Ingresar"):
-        with get_db() as db:
-            row = db.execute(
-                "SELECT password, rol, celular FROM usuarios WHERE user=? AND estado=1",
-                (user,)
-            ).fetchone()
-
+        query = "SELECT password, rol, celular FROM usuarios WHERE user='"+usuario+"' AND estado=1"
+        row = ejecutar_query(query, "", commit=True) 
+ 
         if not row:
+            st.error("Usuario no existe")
+            registrar_log(usuario, "LOGIN_FAIL", "Usuario no existe")
+            return False
+            
+        password_bd = row[0][0]
+                  
+        if password != password_bd:
+        #if not verify_password(password, row[0]):
             st.error("Credenciales inválidas")
-            log_event(user, "LOGIN_FAIL", "Usuario no existe")
+            registrar_log(usuario, "LOGIN_FAIL", "Password incorrecto")
             return False
 
-        if not verify_password(password, row[0]):
-            st.error("Credenciales inválidas")
-            log_event(user, "LOGIN_FAIL", "Password incorrecto")
-            return False
+        # Credenciales OK
+        st.session_state.user = usuario
+        st.session_state.rol = row[0][1]
 
-        st.session_state.user = user
-        st.session_state.rol = row[1]
-        st.session_state.celular = row[2]
-        st.session_state.auth_step = "2fa"
+        # Iniciar 2FA
+        #st.session_state.otp_data = iniciar_2fa(usuario, row[0][2])
 
+        registrar_log(usuario, "LOGIN_OK", "Credenciales válidas")
         return True
+

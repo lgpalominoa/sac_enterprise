@@ -1,0 +1,36 @@
+sac_enterprise/
+│
+├── app.py
+├── requirements.txt
+│
+├── core/
+│   ├── db.py
+│   ├── logs.py
+│   └── security.py
+│
+├── auth/
+│   ├── login.py
+│   └── twofa.py
+│
+├── sales/
+│   ├── motor.py
+│   └── ui.py
+│
+├── utils/
+│   ├── geo.py
+│   └── validators.py
+│
+└── config/
+    └── settings.py
+	
+	
+app.py
+ ├── auth/login.py
+ │     └── valida usuario/password
+ ├── auth/twofa.py
+ │     └── OTP + expiración
+ ├── sales/ui.py
+ │     └── Radar de empresas
+ ├── utils/*
+ └── core/*
+	
